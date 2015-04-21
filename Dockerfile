@@ -3,7 +3,7 @@ MAINTAINER Josue Lima <josuedsi@gmail.com>
 
 #  Simple rails image running app for test purposes
 
-RUN yum update &&                              \
+RUN yum update -y &&                           \
     yum groups mark convert &&                 \
     yum -y groupinstall "Development Tools" && \
     yum install -y        \
@@ -16,14 +16,16 @@ RUN yum update &&                              \
       pcre-devel git      \
       ruby 2.2.1          \
       ruby-devel          \
+      libsqlite3-dev      \
+      sqlite-devel        \
+      sqlite3             \
+      nodejs              \
       rubygem-nokogiri && \
     yum clean all
 
 # Create user to run app
 RUN groupadd staff --gid 6156 && \
     useradd --home /staff --create-home --uid 6157 --gid 6156 staff
-
-RUN chown -R staff:staff /staff/.ssh
 
 # Run stuff as staff from now on
 USER staff
@@ -35,7 +37,7 @@ RUN mkdir logs
 ADD .gemrc /staff/
 
 # Clone project
-RUN git clone --depth=1 git@git@github.com:josuelima/docker_ecs.git
+RUN git clone --depth=1 https://github.com/josuelima/docker_ecs.git
 WORKDIR /staff/docker_ecs/
 
 # Install bundle and config gems folder (bin)
